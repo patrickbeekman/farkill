@@ -1,0 +1,77 @@
+[gd_scene load_steps=2 format=3 uid="uid://chgnq4kiitypa"]
+
+[ext_resource type="Script" uid="uid://betnskdpc4xsn" path="res://Main.gd" id="1_elqb8"]
+
+[node name="Main" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 423.0
+offset_bottom = 81.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_elqb8")
+
+[node name="RollButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 595.0
+offset_top = 405.0
+offset_right = 723.0
+offset_bottom = 473.0
+text = "Roll Dice"
+
+[node name="DiceContainer" type="VBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 222.0
+offset_top = 47.0
+offset_right = 609.0
+offset_bottom = 614.0
+
+[node name="ScoreLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 606.0
+offset_top = 215.0
+offset_right = 795.0
+offset_bottom = 284.0
+theme_override_font_sizes/font_size = 50
+text = "Score: 0"
+
+[node name="ActionButtons" type="HBoxContainer" parent="."]
+layout_mode = 0
+offset_left = 754.0
+offset_top = 404.0
+offset_right = 888.0
+offset_bottom = 473.0
+
+[node name="BankButton" type="Button" parent="ActionButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Bank Points"
+
+[node name="NextRound" type="Button" parent="."]
+offset_left = 919.0
+offset_top = 404.0
+offset_right = 1045.0
+offset_bottom = 471.0
+text = "Next Round"
+
+[node name="RoundScoreLabel" type="Label" parent="."]
+offset_left = 867.0
+offset_top = 32.0
+offset_right = 1056.0
+offset_bottom = 101.0
+theme_override_font_sizes/font_size = 50
+text = "Score: 0"
+
+[node name="LevelLabel" type="Label" parent="."]
+offset_left = 620.0
+offset_top = 32.0
+offset_right = 809.0
+offset_bottom = 101.0
+theme_override_font_sizes/font_size = 50
+text = "Level 1"
+
+[connection signal="pressed" from="RollButton" to="." method="_on_roll_pressed"]
+[connection signal="pressed" from="ActionButtons/BankButton" to="." method="_on_bank_pressed"]
+[connection signal="pressed" from="NextRound" to="." method="start_round"]
