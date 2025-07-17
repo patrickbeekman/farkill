@@ -1,13 +1,14 @@
 extends Control
 
 @onready var roll_button = $RollButton
-@onready var dice_container = $DiceContainer
+@onready var dice_container = $VBoxContainer/RollContainer
+@onready var kept_container = $VBoxContainer/KeptContainer
 
 const DIE_SCENE = preload("res://scenes/Die.tscn")
 const NUM_DICE = 6
 
 var dice_instances = []
-var turn_score := 0
+var newly_kept_dice = []
 var total_score := 0
 
 var current_level := 1
@@ -25,24 +26,27 @@ func _ready():
 	$LevelLabel.text = "Level " + str(current_level) + "\n Goal " + str(goal_score)
 	start_round()
 
-
-func _on_roll_pressed():
-	for die in dice_instances:
-		die.roll()
-		
-	var cur_roll_score = calculate_score()
 	
-	if cur_roll_score == 0:
+func _on_roll_pressed():
+	newly_kept_dice.clear()
+	var roll_container = $VBoxContainer/RollContainer
+	var unkept_dice = roll_container.get_children()
+
+	for die in unkept_dice:
+		die.roll()
+
+	if !has_valid_score(unkept_dice):
 		_fark()
 		return
 
-	turn_score += cur_roll_score
-	$ScoreLabel.text = "Score: " + str(turn_score)
+	var current_roll_score = calculate_score(newly_kept_dice)
+	$ScoreLabel.text = "This roll: " + str(current_roll_score) + "\nSelect dice to keep and press Bank"
 
 
-func calculate_score() -> int:
+
+func calculate_score(dice_to_score: Array) -> int:
 	var counts = {}
-	for die in dice_instances:
+	for die in dice_to_score:
 		var val = die.value
 		counts[val] = counts.get(val, 0) + 1
 
@@ -57,7 +61,7 @@ func calculate_score() -> int:
 				current_score += 1000
 			else:
 				current_score += val * 100
-			count -= 3  # Subtract triple
+			count -= 3
 
 		# Remaining 1s or 5s
 		if val == 1:
@@ -68,29 +72,51 @@ func calculate_score() -> int:
 	return current_score
 
 func _on_bank_pressed():
-	total_score += turn_score
+	var kept_dice = kept_container.get_children()
+	var banked_score = calculate_score(kept_dice)
+	total_score += banked_score
 	rounds_left -= 1
+
 	if total_score >= goal_score:
 		_next_level()
 	else:
-		$ScoreLabel.text = "Banked " + str(turn_score)
+		$ScoreLabel.text = "Banked " + str(banked_score)
 		$RoundScoreLabel.text = "Score: " + str(total_score)
 		_end_round()
 
+
 func _reset_dice():
+	var roll_container = $VBoxContainer/RollContainer
+	var selected_container = $VBoxContainer/SelectedDiceContainer
+
 	for die in dice_instances:
-		die.value = 0
-		die.get_node("ValueLabel").text = "?"
+		# Ensure die is moved back to roll container if it's not already there
+		if die.get_parent() != roll_container:
+			die.get_parent().remove_child(die)
+			roll_container.add_child(die)
+
+		# Reset visual and state
+		die.is_kept = false
+		die.modulate = Color(1, 1, 1)
+		die.roll()
+	newly_kept_dice.clear()
 		
+func has_valid_score(dice_to_check: Array) -> bool:
+	return calculate_score(dice_to_check) > 0
+	
 func _fark():
 	$ScoreLabel.text = "FARK!!!"
-	turn_score = 0
 	rounds_left -= 1
 	_end_round()
 	
+func move_die_to_selected(die: Node):
+	if die.get_parent() == dice_container:
+		dice_container.remove_child(die)
+		kept_container.add_child(die)
+		newly_kept_dice.append(die)
+
 	
 func start_round():
-	turn_score = 0
 	$ScoreLabel.text = "Level " + str(current_level) + "\nRounds Left: " + str(rounds_left)
 	$ActionButtons/BankButton.disabled = false
 	$RollButton.disabled = false
@@ -101,11 +127,10 @@ func _next_level():
 	goal_score += 1000  # dynamic scaling
 	rounds_left = 3
 	total_score = 0
-	turn_score = 0
 
 	$LevelLabel.text = "Level " + str(current_level) + "\nGoal " + str(goal_score)
 	$RoundScoreLabel.text = "Score: " + str(total_score)
-	$ScoreLabel.text = "Level up! Now Level " + str(current_level) + " – Goal: " + str(goal_score)
+	$ScoreLabel.text = "Level up!"
 	$ActionButtons/BankButton.disabled = false
 	$RollButton.disabled = false
 	_reset_dice()
@@ -118,6 +143,6 @@ func _end_round():
 		if total_score >= goal_score:
 			_next_level()
 		else:
-			$ScoreLabel.text += "\n\nGAME OVER! You needed " + str(goal_score)
+			$ScoreLabel.text += "\nGAME OVER! You needed " + str(goal_score)
 	else:
 		$ScoreLabel.text += "\nStart next round"
