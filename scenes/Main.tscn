@@ -25,10 +25,11 @@ text = "Roll Dice"
 layout_mode = 0
 offset_left = 606.0
 offset_top = 215.0
-offset_right = 795.0
-offset_bottom = 284.0
+offset_right = 1074.0
+offset_bottom = 361.0
 theme_override_font_sizes/font_size = 50
 text = "Score: 0"
+horizontal_alignment = 1
 
 [node name="ActionButtons" type="HBoxContainer" parent="."]
 layout_mode = 0
@@ -82,6 +83,27 @@ custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
 size_flags_horizontal = 8
 
+[node name="RoundsLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 935.0
+offset_top = 534.0
+offset_right = 1109.0
+offset_bottom = 620.0
+text = "Round 3/3"
+horizontal_alignment = 1
+vertical_alignment = 1
+autowrap_mode = 1
+
+[node name="GameOverButton" type="Button" parent="."]
+visible = false
+layout_mode = 0
+offset_left = 732.0
+offset_top = 495.0
+offset_right = 928.0
+offset_bottom = 565.0
+text = "Return to Start"
+
 [connection signal="pressed" from="RollButton" to="." method="_on_roll_pressed"]
 [connection signal="pressed" from="ActionButtons/BankButton" to="." method="_on_bank_pressed"]
 [connection signal="pressed" from="NextRound" to="." method="start_round"]
+[connection signal="pressed" from="GameOverButton" to="." method="_on_GameOverButton_pressed"]
