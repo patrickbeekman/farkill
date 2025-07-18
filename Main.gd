@@ -12,7 +12,7 @@ var newly_kept_dice = []
 var total_score := 0
 
 var current_level := 1
-var goal_score := 2000
+var goal_score := 1000
 var rounds_left := 3
 
 func _ready():
@@ -87,7 +87,7 @@ func _on_bank_pressed():
 
 func _reset_dice():
 	var roll_container = $VBoxContainer/RollContainer
-	var selected_container = $VBoxContainer/SelectedDiceContainer
+	var selected_container = $VBoxContainer/KeptContainer
 
 	for die in dice_instances:
 		# Ensure die is moved back to roll container if it's not already there
@@ -124,7 +124,7 @@ func start_round():
 
 func _next_level():
 	current_level += 1
-	goal_score += 1000  # dynamic scaling
+	goal_score += 500  # dynamic scaling
 	rounds_left = 3
 	total_score = 0
 
@@ -143,6 +143,13 @@ func _end_round():
 		if total_score >= goal_score:
 			_next_level()
 		else:
-			$ScoreLabel.text += "\nGAME OVER! You needed " + str(goal_score)
+			$ScoreLabel.text += "\nGAME OVER! Click to return.\nYou needed " + str(goal_score)
+			$ActionButtons/BankButton.disabled = true
+			$RollButton.disabled = true
+			$NextRound.disabled = true  # if you have one
+
+			# Delay and return to start
+			await get_tree().create_timer(0.5).timeout
+			get_tree().change_scene_to_file("res://scenes/StartScreen.tscn")
 	else:
 		$ScoreLabel.text += "\nStart next round"

@@ -1,0 +1,32 @@
+[gd_scene load_steps=2 format=3 uid="uid://v5brb54j31oa"]
+
+[ext_resource type="Script" uid="uid://bdxsu5w1l66xa" path="res://StartScreen.gd" id="1_4vrcr"]
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_4vrcr")
+
+[node name="Label" type="Label" parent="."]
+layout_mode = 0
+offset_left = 470.0
+offset_top = 181.0
+offset_right = 675.0
+offset_bottom = 260.0
+text = "Welcome to Farkill!"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="Button" type="Button" parent="."]
+layout_mode = 0
+offset_left = 482.0
+offset_top = 291.0
+offset_right = 654.0
+offset_bottom = 375.0
+text = "Start Game"
+
+[connection signal="pressed" from="Button" to="." method="_on_start_button_pressed"]
