@@ -40,10 +40,10 @@ func _on_roll_pressed():
 		_fark()
 		return
 
-	var current_roll_score = calculate_score(newly_kept_dice)
+	var current_roll_score = calculate_score(newly_kept_dice, true)
 	$ScoreLabel.text = "This roll: " + str(current_roll_score)
 
-func calculate_score(dice_to_score: Array) -> int:
+func calculate_score(dice_to_score: Array, only_check_special: bool = false) -> int:
 	var counts = {}
 	for die in dice_to_score:
 		var val = die.value
@@ -53,42 +53,40 @@ func calculate_score(dice_to_score: Array) -> int:
 	var values = counts.keys()
 	var count_values = counts.values()
 
-	# Special pattern: Straight (1-6)
-	if values.size() == 6:
-		current_score += 1500
-		return current_score
-
-	# Special pattern: Three pairs
-	if values.size() == 3 and count_values.count(2) == 3:
-		current_score += 1500
-		return current_score
-
-	# Special pattern: Two triplets
-	if values.size() == 2 and count_values.count(3) == 2:
-		current_score += 2500
-		return current_score
-
-	# Special pattern: Five-dice full house (3 + 2)
-	if dice_to_score.size() == 5 and values.size() == 2:
-		if (3 in count_values and 2 in count_values):
-			current_score += 1000  # adjust this if you want
+	# --- Only run these special combo checks if we're scoring freshly rolled dice ---
+	if only_check_special:
+		# Straight (1–6)
+		if values.size() == 6:
+			current_score += 1500
 			return current_score
 
-	# Count scoring for kinds and singles
+		# Three pairs
+		if values.size() == 3 and count_values.count(2) == 3:
+			current_score += 1500
+			return current_score
+
+		# Two triplets
+		if values.size() == 2 and count_values.count(3) == 2:
+			current_score += 2500
+			return current_score
+
+		# 3+2 Full house on 5 dice
+		if dice_to_score.size() == 5 and values.size() == 2:
+			if (3 in count_values and 2 in count_values):
+				current_score += 1000
+				return current_score
+
+	# --- If not checking for specials, or if no special pattern matched ---
 	for val in counts:
 		var count = counts[val]
 
-		# Three or more of a kind
 		if count >= 3:
 			if val == 1:
-				current_score += 1000
-				current_score += (count - 3) * 100  # bonus for each extra '1'
+				current_score += 1000 + (count - 3) * 100
 			else:
-				current_score += val * 100
-				current_score += (count - 3) * val * 100  # bonus per die
-			continue  # already scored, skip to next
+				current_score += val * 100 + (count - 3) * val * 100
+			continue
 
-		# Remaining 1s or 5s
 		if val == 1:
 			current_score += count * 100
 		elif val == 5:
@@ -98,13 +96,19 @@ func calculate_score(dice_to_score: Array) -> int:
 
 func update_current_score_display():
 	var kept_dice = kept_container.get_children()
-	var score = calculate_score(kept_dice)
-	$ScoreLabel.text = "Score: %d pts" % score
+	var base_score = calculate_score(kept_dice)
+	var special_score = calculate_score(newly_kept_dice, true)
+
+	# Avoid double-counting if a special rule applies
+	if special_score >= 1000:
+		$ScoreLabel.text = "Score: %d pts (special!)" % special_score
+	else:
+		$ScoreLabel.text = "Score: %d pts" % base_score
 
 
 func _on_bank_pressed():
 	var kept_dice = kept_container.get_children()
-	var banked_score = calculate_score(kept_dice)
+	var banked_score = calculate_score(kept_container.get_children())
 	total_score += banked_score
 	rounds_left -= 1
 
@@ -125,6 +129,9 @@ func _reset_dice():
 		die.modulate = Color(1, 1, 1)
 		die.roll()
 	newly_kept_dice.clear()
+	
+	# Disable Roll until player keeps a die
+	$ActionButtons/RollButton.disabled = true
 
 func has_valid_score(dice_to_check: Array) -> bool:
 	return calculate_score(dice_to_check) > 0
@@ -147,6 +154,9 @@ func move_die(die: Node):
 		die.is_kept = false
 		die.modulate = Color(1, 1, 1)
 		newly_kept_dice.erase(die)
+		
+	# Enable Roll only if at least one die is kept
+	$ActionButtons/RollButton.disabled = kept_container.get_child_count() == 0
 
 func start_round():
 	#$ScoreLabel.text = "Level " + str(current_level) + "\nRounds Left: " + str(rounds_left)
