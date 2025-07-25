@@ -1,6 +1,6 @@
 extends Control
 
-@onready var roll_button = $RollButton
+@onready var roll_button = $ActionButtons/RollButton
 @onready var dice_container = $VBoxContainer/RollContainer
 @onready var kept_container = $VBoxContainer/KeptContainer
 
@@ -12,7 +12,7 @@ var newly_kept_dice = []
 var total_score := 0
 
 var current_level := 1
-var goal_score := 1000
+var goal_score := 500
 var rounds_left := 3
 var num_rounds := 3
 
@@ -147,7 +147,7 @@ func move_die(die: Node):
 func start_round():
 	#$ScoreLabel.text = "Level " + str(current_level) + "\nRounds Left: " + str(rounds_left)
 	$ActionButtons/BankButton.disabled = false
-	$RollButton.disabled = false
+	$ActionButtons/RollButton.disabled = false
 	$RoundsLabel.text = "Round "  + str(rounds_left) + "/" + str(num_rounds)
 	_reset_dice()
 
@@ -161,12 +161,12 @@ func _next_level():
 	$RoundScoreLabel.text = "Score: " + str(total_score)
 	$ScoreLabel.text = "Level up!"
 	$ActionButtons/BankButton.disabled = false
-	$RollButton.disabled = false
+	$ActionButtons/RollButton.disabled = false
 	_reset_dice()
 
 func _end_round():
 	$ActionButtons/BankButton.disabled = true
-	$RollButton.disabled = true
+	$ActionButtons/RollButton.disabled = true
 
 	if rounds_left <= 0:
 		if total_score >= goal_score:
@@ -174,8 +174,8 @@ func _end_round():
 		else:
 			$ScoreLabel.text += "GAME OVER!"
 			$ActionButtons/BankButton.disabled = true
-			$RollButton.disabled = true
-			$NextRound.disabled = true
+			$ActionButtons/RollButton.disabled = true
+			$ActionButtons/NextRound.disabled = true
 			$GameOverButton.visible = true
 			$GameOverButton.grab_focus()
 	else:

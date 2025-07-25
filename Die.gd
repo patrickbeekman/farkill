@@ -13,9 +13,6 @@ func _ready():
 
 func _on_gui_input(event):
 	if event is InputEventMouseButton and event.pressed:
-		#var main = get_tree().root.get_node("Main")
-		#main.move_die(self)
-		
 		var parent = get_parent()
 		var main = get_tree().root.get_node("Main")  # adjust this if "Main" isn't at the root
 		main.move_die(self)

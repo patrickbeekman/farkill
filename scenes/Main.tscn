@@ -13,41 +13,37 @@ grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_elqb8")
 
-[node name="RollButton" type="Button" parent="."]
-layout_mode = 0
-offset_left = 595.0
-offset_top = 405.0
-offset_right = 723.0
-offset_bottom = 473.0
-text = "Roll Dice"
-
 [node name="ScoreLabel" type="Label" parent="."]
 layout_mode = 0
 offset_left = 606.0
 offset_top = 215.0
 offset_right = 1074.0
-offset_bottom = 361.0
+offset_bottom = 300.0
+theme_override_colors/font_color = Color(0.836318, 0.75583, 0.084708, 1)
 theme_override_font_sizes/font_size = 50
 text = "Score: 0"
 horizontal_alignment = 1
 
 [node name="ActionButtons" type="HBoxContainer" parent="."]
 layout_mode = 0
-offset_left = 754.0
+offset_left = 606.0
 offset_top = 404.0
-offset_right = 888.0
+offset_right = 1037.0
 offset_bottom = 473.0
+
+[node name="RollButton" type="Button" parent="ActionButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Roll Dice"
 
 [node name="BankButton" type="Button" parent="ActionButtons"]
 layout_mode = 2
 size_flags_horizontal = 3
 text = "Bank Points"
 
-[node name="NextRound" type="Button" parent="."]
-offset_left = 919.0
-offset_top = 404.0
-offset_right = 1045.0
-offset_bottom = 471.0
+[node name="NextRound" type="Button" parent="ActionButtons"]
+layout_mode = 2
+size_flags_horizontal = 3
 text = "Next Round"
 
 [node name="RoundScoreLabel" type="Label" parent="."]
@@ -55,6 +51,7 @@ offset_left = 867.0
 offset_top = 32.0
 offset_right = 1056.0
 offset_bottom = 101.0
+theme_override_colors/font_color = Color(0.529696, 0.78671, 0.441187, 1)
 theme_override_font_sizes/font_size = 50
 text = "Score: 0"
 
@@ -73,15 +70,15 @@ offset_top = 26.0
 offset_right = 451.0
 offset_bottom = 516.0
 
-[node name="RollContainer" type="VBoxContainer" parent="VBoxContainer"]
+[node name="RollContainer" type="HBoxContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-size_flags_horizontal = 0
+size_flags_vertical = 3
 
 [node name="KeptContainer" type="HBoxContainer" parent="VBoxContainer"]
 custom_minimum_size = Vector2(100, 100)
 layout_mode = 2
-size_flags_horizontal = 8
+size_flags_vertical = 3
 
 [node name="RoundsLabel" type="Label" parent="."]
 layout_mode = 0
@@ -103,7 +100,19 @@ offset_right = 928.0
 offset_bottom = 565.0
 text = "Return to Start"
 
-[connection signal="pressed" from="RollButton" to="." method="_on_roll_pressed"]
+[node name="RulesLabel" type="Label" parent="."]
+layout_mode = 0
+offset_left = 601.0
+offset_top = 513.0
+offset_right = 964.0
+offset_bottom = 630.0
+text = "While a scoring combination is rolled:
+1. Roll dice.
+2. Select at least 1 scoring die.
+3. Bank scoring dice to end round 
+    OR Reroll unbanked dice"
+
+[connection signal="pressed" from="ActionButtons/RollButton" to="." method="_on_roll_pressed"]
 [connection signal="pressed" from="ActionButtons/BankButton" to="." method="_on_bank_pressed"]
-[connection signal="pressed" from="NextRound" to="." method="start_round"]
+[connection signal="pressed" from="ActionButtons/NextRound" to="." method="start_round"]
 [connection signal="pressed" from="GameOverButton" to="." method="_on_GameOverButton_pressed"]
