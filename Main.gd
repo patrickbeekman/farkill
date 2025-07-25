@@ -4,6 +4,8 @@ extends Control
 @onready var dice_container = $VBoxContainer/RollContainer
 @onready var kept_container = $VBoxContainer/KeptContainer
 
+var help_menu = preload("res://scenes/HelpMenu.tscn").instantiate()
+
 const DIE_SCENE = preload("res://scenes/Die.tscn")
 const NUM_DICE = 6
 
@@ -17,6 +19,8 @@ var rounds_left := 3
 var num_rounds := 3
 
 func _ready():
+	add_child(help_menu)
+	help_menu.visible = false
 	randomize()
 	for i in range(NUM_DICE):
 		var die = DIE_SCENE.instantiate()
@@ -183,4 +187,7 @@ func _end_round():
 		
 func _on_GameOverButton_pressed():
 	get_tree().change_scene_to_file("res://scenes/StartScreen.tscn")
+	
+func _on_HelpButton_pressed():
+	help_menu.visible = true
 	

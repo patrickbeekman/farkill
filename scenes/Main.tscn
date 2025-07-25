@@ -4,11 +4,10 @@
 
 [node name="Main" type="Control"]
 layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = 423.0
-offset_bottom = 81.0
+anchor_right = 1.016
+anchor_bottom = 1.102
+offset_right = 404.568
+offset_bottom = 14.904
 grow_horizontal = 2
 grow_vertical = 2
 script = ExtResource("1_elqb8")
@@ -112,7 +111,16 @@ text = "While a scoring combination is rolled:
 3. Bank scoring dice to end round 
     OR Reroll unbanked dice"
 
+[node name="HelpButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 981.0
+offset_top = 598.0
+offset_right = 1064.0
+offset_bottom = 631.0
+text = "Help?"
+
 [connection signal="pressed" from="ActionButtons/RollButton" to="." method="_on_roll_pressed"]
 [connection signal="pressed" from="ActionButtons/BankButton" to="." method="_on_bank_pressed"]
 [connection signal="pressed" from="ActionButtons/NextRound" to="." method="start_round"]
 [connection signal="pressed" from="GameOverButton" to="." method="_on_GameOverButton_pressed"]
+[connection signal="pressed" from="HelpButton" to="." method="_on_HelpButton_pressed"]

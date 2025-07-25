@@ -1,0 +1,62 @@
+[gd_scene load_steps=2 format=3 uid="uid://ub0h611ia4ac"]
+
+[ext_resource type="Script" uid="uid://c8nayl4s3hyrc" path="res://HelpMenu.gd" id="1_6vayk"]
+
+[node name="HelpMenu" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_right = 423.0
+offset_bottom = 80.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_6vayk")
+
+[node name="Panel" type="Panel" parent="."]
+layout_mode = 0
+offset_left = 66.0
+offset_top = 44.0
+offset_right = 1066.0
+offset_bottom = 555.0
+
+[node name="Label" type="RichTextLabel" parent="Panel"]
+layout_mode = 0
+offset_left = 41.0
+offset_top = 96.0
+offset_right = 967.0
+offset_bottom = 487.0
+theme_override_font_sizes/normal_font_size = 25
+text = "- Single 1s = 100 points
+- Single 5s = 50 points
+- Three 1s = 1,000 points
+- Three of any other number = number × 100
+- Four of a kind = 1,000+ (scales higher)
+- Five of a kind = higher bonus
+- Six of a kind = 3,000 points
+- Straight (1-6) = 1,500 points
+- Three pairs = 1,500 points
+- Two triplets = 2,500 points
+- Full House (3 + 2, five dice) = 1,000 points"
+
+[node name="Label2" type="Label" parent="Panel"]
+layout_mode = 0
+offset_left = 315.0
+offset_top = 20.0
+offset_right = 650.0
+offset_bottom = 74.0
+theme_override_font_sizes/font_size = 40
+text = "Scoring Guide"
+horizontal_alignment = 1
+vertical_alignment = 1
+
+[node name="CloseButton" type="Button" parent="."]
+layout_mode = 0
+offset_left = 463.0
+offset_top = 565.0
+offset_right = 648.0
+offset_bottom = 628.0
+theme_override_font_sizes/font_size = 40
+text = "Close"
+
+[connection signal="pressed" from="CloseButton" to="." method="_on_close_button_pressed"]
